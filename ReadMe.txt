@@ -70,3 +70,21 @@ Example Scenario :-
 ==> Transaction T1 writes a new value to X.
 ==> Transaction T2 writes a new value to X.
 ==> In this case, the update made by T1 is lost because T2 overwrites it.
+
+# INO DB with MySQL :- It is a storage engine for MYSQL. Storage Engine is a like a interface that exists between DBMS and actual diask (where the data is) and it exists as an interface in between where all the queries used to get executed on the corresponding DB.
+
+Q. How Database ensure Atomicity?
+# There are two ways in which Database ensure Atomicity :-
+1). Logging :- In the process the DBMS logs all the actions that it is doing so that later it can undo it. These logs can be maintained in memory or disk.
+
+2). Shadow Paging :- In this process, the DBMS makes copies of actions (transactions) and then this copy is initially considered as a temporary copy. If transaction succeeds then it starts pointing to the new temporary copies.
+
+# Among above two techniques `Logging` is the most preferred one.
+
+# Atomicity for MYSQL DB :- 
+- After each `Commit` or `Rollback` database remains in a consistent state.
+- In order to handle `Rollback`, there different mechanisms and they are :- 1). Undo Log, 2). Redo Log
+
+1). Undo Log :- This log contains records about how to undo the last change done by a transaction. If any other transaction need the original data as a part of consitent read operation, the unmodified data is retrieved from undo log.
+
+2). Redo Log :- By definition, the redo log is a disk based data structure used for crash recovery to correct data written by `Incomplete Transaction`. The changes which could make it upto the data files before the crash or any other reasons are replayed automatically during the restart of server after crash. 

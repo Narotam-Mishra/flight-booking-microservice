@@ -87,4 +87,36 @@ Q. How Database ensure Atomicity?
 
 1). Undo Log :- This log contains records about how to undo the last change done by a transaction. If any other transaction need the original data as a part of consitent read operation, the unmodified data is retrieved from undo log.
 
-2). Redo Log :- By definition, the redo log is a disk based data structure used for crash recovery to correct data written by `Incomplete Transaction`. The changes which could make it upto the data files before the crash or any other reasons are replayed automatically during the restart of server after crash. 
+2). Redo Log :- By definition, the redo log is a disk based data structure used for crash recovery to correct data written by `Incomplete Transaction`. The changes which could make it upto the data files before the crash or any other reasons are replayed automatically during the restart of server after crash.
+
+# Isolation - Database isolation defines the degree to which a transaction must be isolated from the data modifications made by any other transaction(even though in reality there can be a large number of concurrently running transactions). The overarching goal is to prevent reads and writes of temporary, aborted, or otherwise incorrect data written by concurrent transactions.
+
+Q. How Isolation is handled in MySQL DB?
+# In database, Isolation determines how transaction integrity is visible to other users and systems. A lower isolation level increases the ability of many users to access the same data at the same time, but also increases the number of concurrency effects (such as dirty reads or lost updates) users might encounter. Conversely, a higher isolation level reduces the types of concurrency effects that users may encounter, but requires more system resources and increases the chances that one transaction will block another.
+
+# Dirty Read - A dirty read (aka uncommitted dependency) occurs when a transaction retrieves a row that has been updated by another transaction that is not yet committed.
+
+# Non-repeatable reads :- A non-repeatable read occurs when a transaction retrieves a row twice and that row is updated by another transaction that is committed in between.
+
+# Phantom reads :- A phantom read occurs when a transaction retrieves a set of rows twice and new rows are inserted into or removed from that set by another transaction that is committed in between.
+
+## Isolation levels (from lowest to higest)
+
+1). Read uncommitted :- This is the lowest isolation level. In this level, dirty reads are allowed, so one transaction may see not-yet-committed changes made by other transactions.
+
+# There is almost no isolation on this level,
+# It reads the latest uncommited value at every step that can be updated from other uncommited transactions.
+# Dirty reads are possible.
+# This process will be pretty fast.
+
+2). Read committed :- It is an isolation level that guarantees that any data read is committed at the moment it is read. It simply restricts the reader from seeing any intermediate, uncommitted, 'dirty' read.
+
+# Here Dirty reads are avoided because any uncommited changes are not visible to any other transaction until we commit.
+
+# In this level, each `Select` statement will have its own snapshot of data which can be problematic if we execute same `Select` again because some other transaction might commit and update and we will see new data in the second `Select`
+
+# Repeatable reads - In this isolation level, a lock-based concurrency control DBMS implementation keeps read and write locks until the end of the transaction.
+
+# More Info Link1 - https://medium.com/nerd-for-tech/understanding-database-isolation-levels-c4ebcd55c6b9
+
+# Link2 - https://en.wikipedia.org/wiki/Isolation_(database_systems)

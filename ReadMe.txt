@@ -71,8 +71,6 @@ Example Scenario :-
 ==> Transaction T2 writes a new value to X.
 ==> In this case, the update made by T1 is lost because T2 overwrites it.
 
-# INO DB with MySQL :- It is a storage engine for MYSQL. Storage Engine is a like a interface that exists between DBMS and actual diask (where the data is) and it exists as an interface in between where all the queries used to get executed on the corresponding DB.
-
 Q. How Database ensure Atomicity?
 # There are two ways in which Database ensure Atomicity :-
 1). Logging :- In the process the DBMS logs all the actions that it is doing so that later it can undo it. These logs can be maintained in memory or disk.
@@ -115,8 +113,31 @@ Q. How Isolation is handled in MySQL DB?
 
 # In this level, each `Select` statement will have its own snapshot of data which can be problematic if we execute same `Select` again because some other transaction might commit and update and we will see new data in the second `Select`
 
-# Repeatable reads - In this isolation level, a lock-based concurrency control DBMS implementation keeps read and write locks until the end of the transaction.
+3). Repeatable reads - In this isolation level, a lock-based concurrency control DBMS implementation keeps read and write locks until the end of the transaction.
+
+# A snapshot of select is taken first time it runs during a transaction and same snapshot is used through out the transaction when same select is executed.
+
+# A transaction running at this level doesn't take into account any changes to data made by other transaction.
+
+# But this brings `Phatom Read` problem i.e, a new row can exist in between transaction which was not before.
+
+4). Serializable :- This is the highest isolation level With a lock-based concurrency control DBMS implementation, serializability requires read and write locks to be released at the end of the transaction. 
+
+# It completely isolates the effect of one transaction from others. It is a Repeatable Read with more isolation to avoid `Phantom Read`
 
 # More Info Link1 - https://medium.com/nerd-for-tech/understanding-database-isolation-levels-c4ebcd55c6b9
 
 # Link2 - https://en.wikipedia.org/wiki/Isolation_(database_systems)
+
+Q. How Durability is ensured in MySQL DB?
+# The DB should be durable enough to hold all the latest updates even if system fails or restarts.
+
+# If a transaction updates a chunk of data in DB and commits the DB will hold the new data. If transaction commits but system fails before data could be written then data should be written back when system restarts.
+
+# # INO DB with MySQL :- It is a storage engine for MYSQL. Storage Engine is a like a interface that exists between DBMS and actual disk (where the data is) and it exists as an interface in between where all the queries used to get executed on the corresponding DB.
+
+# MySQL DB Architecture :- https://chatgpt.com/canvas/shared/67b3183d23448191aecd3ddeade21b4d
+
+# More Details - https://medium.com/@sameersoin/deep-dive-into-data-storage-in-databases-the-innodb-engine-7ec0a55e3886
+
+# Sequelize Transaction : https://sequelize.org/docs/v6/other-topics/transactions/

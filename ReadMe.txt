@@ -134,10 +134,29 @@ Q. How Durability is ensured in MySQL DB?
 
 # If a transaction updates a chunk of data in DB and commits the DB will hold the new data. If transaction commits but system fails before data could be written then data should be written back when system restarts.
 
-# # INO DB with MySQL :- It is a storage engine for MYSQL. Storage Engine is a like a interface that exists between DBMS and actual disk (where the data is) and it exists as an interface in between where all the queries used to get executed on the corresponding DB.
+## INO DB with MySQL :- It is a storage engine for MYSQL. Storage Engine is a like a interface that exists between DBMS and actual disk (where the data is) and it exists as an interface in between where all the queries used to get executed on the corresponding DB.
+
+# Race Condition :- When two or more different entities try to access the same resource then that is called `Reace Condition`. In order to avoid Race Condition we can do multiple stuffs :-
+
+- we can make our isolation level Serializable
+- Locking mechanism using which we can avoid race condition
+
+# Different types of locks :-
+1). Shared Lock :- this allows multiple transactions to read data at same time but restricts any of them from writing,
+
+2). Exclusive Lock :- this prevents transactions from reading or writing the same data at same time,
+
+3). Intent lock :- this is used to specify that a transaction is planning to read or write a certain section of data.
+
+4). Row-level Locks :- this allows transaction to lock only a specific row.
+
+# MySQL ---> is a MVCC (Multi Version Concurrency Control) database. This database is compatible to allow multiple transactions to read or write the same data without much conflict.
+
+# Every transaction in MySQL sort of captures the data it is about to modify at start of transaction and writes the changes to an entirely different verison of data. This allows transaction to continue working with original data without conflict.
 
 # MySQL DB Architecture :- https://chatgpt.com/canvas/shared/67b3183d23448191aecd3ddeade21b4d
 
 # More Details - https://medium.com/@sameersoin/deep-dive-into-data-storage-in-databases-the-innodb-engine-7ec0a55e3886
 
 # Sequelize Transaction : https://sequelize.org/docs/v6/other-topics/transactions/
+

@@ -154,6 +154,13 @@ Q. How Durability is ensured in MySQL DB?
 
 # Every transaction in MySQL sort of captures the data it is about to modify at start of transaction and writes the changes to an entirely different verison of data. This allows transaction to continue working with original data without conflict.
 
+# In order to handle race condition in Booking system, we can implement two different kind of mechanishms :-
+1). Pesimistic Concurrency Control :- In this approach, we try to avoid race condition in a database by locking the data for which we can use locking or isolation level and this ensures us at one point of time only one person is accessing the data which can cause the race condition. To avoid this, one way is to set our transaction `Serializable`. Other ways are :-
+- implement row level lock, for example 
+select * from table_name where condition for update
+
+2). Optimistic Concurrency Control :- In this approach, we can put manual checks for conflicts before committing the change
+
 # MySQL DB Architecture :- https://chatgpt.com/canvas/shared/67b3183d23448191aecd3ddeade21b4d
 
 # More Details - https://medium.com/@sameersoin/deep-dive-into-data-storage-in-databases-the-innodb-engine-7ec0a55e3886

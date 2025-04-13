@@ -16,7 +16,7 @@ async function createBooking(req, res) {
                 .status(StatusCodes.OK)
                 .json(SuccessResponse)
     } catch (error) {
-        console.log("Booking controlling crashed!");
+        console.log("Booking controller crashed!");
         ErrorResponse.error = error
         return res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)

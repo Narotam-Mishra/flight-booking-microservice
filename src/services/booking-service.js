@@ -5,6 +5,7 @@ const db = require('../models');
 const serverConfig = require('../config/server-config');
 const AppError = require('../utils/errors/app-error');
 const { StatusCodes } = require('http-status-codes');
+const { ServerConfig } = require('../config');
 
 const bookingRepository = new BookingRepository();
 
@@ -33,7 +34,7 @@ async function createBooking(data) {
       // console.log("Flight details:", flight);
 
       const flightData = flight.data.data;
-      if (data.numOfSeats > flightData.totalSeats) {
+      if (data.noOfSeats > flightData.totalSeats) {
         throw new AppError(
           "Not enough seats available",
           StatusCodes.BAD_REQUEST
@@ -41,14 +42,20 @@ async function createBooking(data) {
       }
 
       // calculate total price for flight and create booking
-      const totalBillingAmount = data.numOfSeats * flightData.price;
+      const totalBillingAmount = data.noOfSeats * flightData.price;
+      // console.log("Number of seats:", data.noOfSeats);
+      
       // console.log("Total Billing Amount:", totalBillingAmount);
 
       const bookingPayload = {...data, totalCost: totalBillingAmount };
       const booking = await bookingRepository.create(bookingPayload, transaction);
+
+      await axios.patch(`${ServerConfig.FLIGHT_SERVICE}/api/v1/flights/${data.flightId}/seats`, {
+        seats: data.noOfSeats,
+      })
        
       await transaction.commit();
-      return true;
+      return booking;
     } catch (error) {
         await transaction.rollback();
         throw error;

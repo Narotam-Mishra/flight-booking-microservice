@@ -7,7 +7,7 @@ const AppError = require('../utils/errors/app-error');
 const { StatusCodes } = require('http-status-codes');
 const { ServerConfig } = require('../config');
 const { Enums } = require('../utils/common');
-const { BOOKED } = Enums.BOOKING_STATUS;
+const { BOOKED, CANCELLED } = Enums.BOOKING_STATUS;
 
 const bookingRepository = new BookingRepository();
 
@@ -69,27 +69,41 @@ async function makePayment(data){
 
   try {
     const bookingDetails = await bookingRepository.get(data.bookingId, transaction);
-    if(bookingDetails.totalCost !== Number(data.totalCost)){
+    // console.log("Booking details:",bookingDetails);
+    
+    if(bookingDetails.status === CANCELLED){
+      throw new AppError(`The booking has expired`, StatusCodes.BAD_REQUEST);
+    }
+
+    const bookingTime = new Date(bookingDetails.createdAt)
+    const currentTime = new Date();
+    
+    // check for timeout condition
+    if(currentTime - bookingTime > 300000){
+      await bookingRepository.update(data.bookingId, { status: CANCELLED }, transaction);
+      throw new AppError(`The booking has expired`, StatusCodes.BAD_REQUEST);
+    }
+
+    if(bookingDetails.totalCost != data.totalCost){
       // console.log("Booking details cost:",bookingDetails.totalCost, typeof(bookingDetails.totalCost));
       // console.log("Passed total cost:", data.totalCost, typeof(data.totalCost));
       throw new AppError(`The amount of the payment doesn't match`, StatusCodes.BAD_REQUEST);
     }
 
-    if(bookingDetails.userId !== Number(data.userId)){
+    if(bookingDetails.userId != data.userId){
       // console.log("User Id:",bookingDetails.userId, typeof(bookingDetails.userId));
       // console.log("Passed User Id:",data.userId, typeof(data.userId));
       throw new AppError(`The user corresponding to the booking doesn't match`, StatusCodes.BAD_REQUEST);
     }
 
     // we assume that payment is successfull
-    const response = await bookingRepository.update(data.bookingId, { status: BOOKED }, transaction);
+    await bookingRepository.update(data.bookingId, { status: BOOKED }, transaction);
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
     throw error;
   }
 }
-
 
 module.exports = {
     createBooking,

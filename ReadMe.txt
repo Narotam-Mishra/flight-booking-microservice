@@ -161,6 +161,21 @@ select * from table_name where condition for update
 
 2). Optimistic Concurrency Control :- In this approach, we can put manual checks for conflicts before committing the change
 
+## Idempotency :- It is a property of certain operations in Maths and Computer Science where they can be applied multiple times without changing the result beyond first application.
+
+## Idempotent APIs :- These are kind of APIs in which the action of API has been already successfully implemented once and by mistake (due to some error) one more similar request comes up and that are not going be applied. After first successful application, further attempts not going to work.
+
+## An idempotent API is an API that has the same effect no matter how many times you call it with the same input. In other words, whether you call it once or multiple times, the end result (state on the server) remains unchanged after the first successful request.
+
+## In order to make an API Idempotent, we have to send Idempotent key. The sole purpose to make API Idempotent is to avoid retry mechanishm (mistakes). 
+
+Q. How to make API Idempotent?
+# Inside the request headers of API, there are lot of information that comes up about an HTTP request and along with this we can send something called `idempotent key` (x-idempotency-key) within request headers. value of idempotency key should be unique. It is dupty of client to send idempotency key.
+
+# Concept of  Idempotent API :- https://chatgpt.com/share/68121c17-1470-8004-bbe9-8f86dc033ebf
+
+# How to achieve idempotency in POST method? - https://medium.com/@saurav200892/how-to-achieve-idempotency-in-post-method-d88d7b08fcdd
+
 # MySQL DB Architecture :- https://chatgpt.com/canvas/shared/67b3183d23448191aecd3ddeade21b4d
 
 # More Details - https://medium.com/@sameersoin/deep-dive-into-data-storage-in-databases-the-innodb-engine-7ec0a55e3886
